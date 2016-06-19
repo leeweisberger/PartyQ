@@ -6,7 +6,7 @@ var bodyParser = require('body-parser');
 
 var client_id = '4ee1d53243074fdc8e16cf4f989e356c'; // Your client id
 var client_secret = '0f0043cf1a6645788e7167f9ca142fde'; // Your secret
-var redirect_uri = 'http://localhost:8888/callback'; // Your redirect uri
+var redirect_uri = 'https://lit-cove-69879.herokuapp.com/callback'; // Your redirect uri
 
 var access_token=null;
 var refresh_token=null;
