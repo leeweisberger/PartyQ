@@ -1,0 +1,43 @@
+doctype html
+html
+  head
+    title Example of the Authorization Code flow with Spotify    
+    link(rel='stylesheet', href='//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css')     
+    link(href='/css/styles.css', rel='stylesheet')    
+    link(rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/css/materialize.min.css")
+    link(href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet")
+  body
+    .container
+      form.create_playlist#createPlaylistForm(name='createPlaylistForm', action='createPlaylist', method='post')
+        .row
+          .input-field.col.s12
+            input.validate#playlistName(type='text', name='playlistName')             
+            label(for='playlistName') Playlist Name             
+        input#access_token(type='hidden', name='access_token', value='#{pageData.access_token}')             
+        input#user_id(type='hidden', name='user_id', value='setByHTML')             
+        input#user_name(type='hidden', name='user_name', value='setByHTML')             
+        input#refresh_token(type='hidden', name='refresh_token', value='#{pageData.access_token}')           
+        button.btn.waves-effect.waves-light(type='submit') Submit
+          i.material-icons.right send       
+      .not_displayed#notloggedin
+        h1 There was an error logging you in!     
+    script(src='http://code.jquery.com/jquery-1.10.1.min.js')
+    script(src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/js/materialize.min.js")   
+    script.
+      if ('#{pageData.error}') {
+        alert('There was an error during the authentication');
+        $('#loggedin').hide();
+        $('#notloggedin').show();
+      } 
+      else {        
+          $.ajax({
+              url: 'https://api.spotify.com/v1/me',
+            headers: {
+              'Authorization': 'Bearer ' + '#{pageData.access_token}'
+            },
+              success: function(response) {
+                document.getElementById("user_id").value=response.id;
+                document.getElementById("user_name").value=response.display_name;
+              }
+          });
+      }

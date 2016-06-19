@@ -1,0 +1,136 @@
+doctype html
+html
+  head
+    title Example of the Authorization Code flow with Spotify    
+    link(rel='stylesheet', href='//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css')
+    link(href='/css/styles.css', rel='stylesheet')    
+    link(rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/css/materialize.min.css")
+    link(href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet")
+  body
+    .container.center-align
+      h1 Collaborating on playlist #{pageData.playlist_name} By #{pageData.user_name}
+       
+    .container
+      .row
+        .input-field
+          i.material-icons.prefix library_music
+          input.form-control(type='text', name='track' id='track')
+          label(for='track') Track Name
+      .row
+        .input-field
+          i.material-icons.prefix account_circle
+          input.form-control(type='text', name='artist' id='artist')
+          label(for='artist') Artist Name
+      button.btn.waves-effect.waves-light(type='button', onclick="search()") Search
+      button.btn.right(type='button', href='/') Return Home
+    .container(id='list',onclick="Materialize.showStaggeredList('#staggered-test')")
+    script(src='http://code.jquery.com/jquery-1.10.1.min.js')
+    script( src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js") 
+    script(src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/js/materialize.min.js")
+
+    script.
+      $(function(){
+        $("[data-hide]").on("click", function(){
+          $(this).closest("." + $(this).attr("data-hide")).hide();
+        });
+      });
+      function createCard(song,songID, artist, album, art,row, first){
+        var col = document.createElement("div");
+        col.className='col s6';
+        if(!first){
+          col.className='col s6 offset-6'
+        }
+        var card = document.createElement("div");
+        card.className='card';
+        var card_image = document.createElement("div");
+        card_image.className='card-image';
+        var img = document.createElement("img");
+        img.setAttribute('src',art);
+        var span = document.createElement("span");
+        span.className=('card-title text_background fill_width');
+        span.appendChild(document.createTextNode(song));
+        var card_content = document.createElement("div");
+        card_content.className='card-content';
+        var artist_p = document.createElement('p');
+        artist_p.appendChild(document.createTextNode('Artist: ' + artist)); 
+        artist_p.className='song_info truncate';
+        var album_p = document.createElement('p');
+        album_p.appendChild(document.createTextNode('Album: ' +album));
+        album_p.className='song_info truncate';
+        var card_action = document.createElement("div");
+        card_action.className='card-action';
+        var a = document.createElement("a");
+        a.appendChild(document.createTextNode('Select Track'));
+        a.className='btn waves-effect waves-green btn-flat';
+        a.onclick = function(){addSong(songID)};
+
+        col.appendChild(card);
+        card.appendChild(card_image);
+        card_image.appendChild(img);
+        card_image.appendChild(span);
+        card.appendChild(card_content);
+        card_content.appendChild(artist_p);
+        card_content.appendChild(album_p);
+        card.appendChild(card_action);
+        card_action.appendChild(a);
+        return col;
+
+      }
+      
+
+      function addSong(songID){
+         $.post("/addSongToPlaylist",
+        {songID:songID,pin:'#{pageData.pin}',refresh_token:'#{pageData.refresh_token}'}, 
+        function(data, status){
+        if(data=='OK'){
+          Materialize.toast("Song Added Successfully", 3000, 'rounded green' );
+        }
+        else{
+          Materialize.toast("Error Adding Song", 3000, 'rounded red' );
+        }
+        });
+      };
+
+      function search() {
+        var out = document.getElementById("list");
+        while (out.firstChild) {
+          out.removeChild(out.firstChild);
+        }
+        var track = document.getElementById("track").value;
+        var artist = document.getElementById("artist").value;
+        var querystring = 'track:' + track.replace(/\s/g, '+');
+        if(artist)
+          querystring+='+artist:' + artist.replace(/\s/g, '+');
+        querystring+='&type=track';
+
+        $.ajax({
+              url:'https://api.spotify.com/v1/search/?q=' + querystring,
+              success: function(response) {
+                var div = document.createElement("div");
+                for(i=0; i<response.tracks.items.length; i++){
+                  
+                  var artist = response.tracks.items[i].artists[0].name;
+                  var track = response.tracks.items[i].name;
+                  var album = response.tracks.items[i].album.name;
+                  var id = response.tracks.items[i].uri;
+                  var art = response.tracks.items[i].album.images[0].url;
+                  if(i%2==0){
+                    var row = document.createElement('div');
+                    row.className='row';
+                  }
+                  row.appendChild(createCard(track, id,artist, album, art,i%2==0));
+                  
+                  if(i%2!=0)
+                    div.appendChild(row);
+                  
+                }
+
+                var element = document.getElementById("list");
+                element.appendChild(div);
+
+              }
+          });        
+
+      }
+
+              

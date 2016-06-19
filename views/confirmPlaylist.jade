@@ -1,0 +1,18 @@
+doctype html
+html
+  head
+    title Example of the Authorization Code flow with Spotify     
+    link(rel='stylesheet', href='//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css')
+    link(href='/css/styles.css', rel='stylesheet')    
+    link(rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/css/materialize.min.css")
+    link(href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet")   
+ 
+  body
+    .container
+      h1.center-align The code for #{pageData.playlist_name} is: #{pageData.pin}     
+     
+    .container
+      a.btn.waves-effect.waves-light(href='/') Return Home     
+    script(src='http://code.jquery.com/jquery-1.10.1.min.js')
+    //- script( src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js") 
+    script(src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/js/materialize.min.js")   
