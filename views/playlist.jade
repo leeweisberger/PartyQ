@@ -82,7 +82,6 @@ html
          $.post("/addSongToPlaylist",
         {songID:songID,pin:'#{pageData.pin}',refresh_token:'#{pageData.refresh_token}'}, 
         function(data, status){
-        alert(status);
         if(data=='OK'){
           Materialize.toast("Song Added Successfully", 3000, 'rounded green' );
         }
