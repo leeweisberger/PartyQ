@@ -9,7 +9,7 @@ html
   body
     .container
       //- form.create_playlist#createPlaylistForm(name='createPlaylistForm', action='createPlaylist', method='post')
-      .row
+      .row#loggedin
         .input-field.col.s12
           input.validate#playlistName(type='text', name='playlistName')             
           label(for='playlistName') Playlist Name             
@@ -28,8 +28,10 @@ html
     script(src='http://code.jquery.com/jquery-1.10.1.min.js')
     script(src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/js/materialize.min.js")   
     script.
-      if ('#{pageData.error}') {
+      if ('#{pageData.error}' && '#{pageData.error}'!='null') {
         alert('There was an error during the authentication');
+        alert('#{pageData.error}');
+
         $('#loggedin').hide();
         $('#notloggedin').show();
       } 
