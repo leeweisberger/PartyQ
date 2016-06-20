@@ -5,7 +5,7 @@ html
     link(rel='stylesheet', href='//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css')
     link(href='/css/styles.css', rel='stylesheet')    
     link(rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/css/materialize.min.css")
-    link(href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet")
+    link(href="//fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet")
   body
     .container.center-align
       h1 Collaborating on playlist #{pageData.playlist_name} By #{pageData.user_name}
@@ -24,9 +24,8 @@ html
       button.btn.waves-effect.waves-light(type='button', onclick="search()") Search
       button.btn.right(type='button', href='/') Return Home
     .container(id='list',onclick="Materialize.showStaggeredList('#staggered-test')")
-    script(src='http://code.jquery.com/jquery-1.10.1.min.js')
-    script( src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js") 
-    script(src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/js/materialize.min.js")
+    script(src='//code.jquery.com/jquery-1.10.1.min.js')
+    script(src="//cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/js/materialize.min.js")
 
     script.
       $(function(){
