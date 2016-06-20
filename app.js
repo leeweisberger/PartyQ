@@ -6,7 +6,7 @@ var bodyParser = require('body-parser');
 
 var client_id = '4ee1d53243074fdc8e16cf4f989e356c'; // Your client id
 var client_secret = '0f0043cf1a6645788e7167f9ca142fde'; // Your secret
-var redirect_uri = 'https://lit-cove-69879.herokuapp.com/callback'; // Your redirect uri
+var redirect_uri = 'http://partyq.hopto.org/callback'; // Your redirect uri
 
 var access_token=null;
 var refresh_token=null;
@@ -91,7 +91,8 @@ app.get('/callback', function(req, res) {
     };
 
     request.post(authOptions, function(error, response, body) {
-
+    	console.log(error);
+    	console.log(body);
         access_token = body.access_token;
         refresh_token = body.refresh_token;
         res.render('createPlaylist', {pageData: {access_token : access_token, refresh_token: refresh_token, error: error}});   
@@ -246,7 +247,8 @@ app.post('/createPlaylist', function(req, res) {
 				playlists.update(
 				  	playlist
 				);
-			    res.redirect('confirmPlaylist/?pin=' + pin+'&playlist_name='+req.body.playlistName);
+				console.log(req.body.playlistName);
+			    res.send({pageData:{pin:pin,playlist_name:req.body.playlistName}});
 
 			},body.id);		
           }
@@ -280,7 +282,7 @@ var getUniquePin = function(callback,id){
 });
 };
 
-app.set('port', (process.env.PORT || 8888));
+app.set('port', (process.env.PORT || 80));
 app.listen(app.get('port'), function() {
   console.log('Node app is running on port', app.get('port'));
 });

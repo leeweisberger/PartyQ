@@ -8,19 +8,23 @@ html
     link(href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet")
   body
     .container
-      form.create_playlist#createPlaylistForm(name='createPlaylistForm', action='createPlaylist', method='post')
-        .row
-          .input-field.col.s12
-            input.validate#playlistName(type='text', name='playlistName')             
-            label(for='playlistName') Playlist Name             
-        input#access_token(type='hidden', name='access_token', value='#{pageData.access_token}')             
-        input#user_id(type='hidden', name='user_id', value='setByHTML')             
-        input#user_name(type='hidden', name='user_name', value='setByHTML')             
-        input#refresh_token(type='hidden', name='refresh_token', value='#{pageData.access_token}')           
-        button.btn.waves-effect.waves-light(type='submit') Submit
-          i.material-icons.right send       
+      //- form.create_playlist#createPlaylistForm(name='createPlaylistForm', action='createPlaylist', method='post')
+      .row
+        .input-field.col.s12
+          input.validate#playlistName(type='text', name='playlistName')             
+          label(for='playlistName') Playlist Name             
+      input#access_token(type='hidden', name='access_token', value='#{pageData.access_token}')             
+      input#user_id(type='hidden', name='user_id', value='setByHTML')             
+      input#user_name(type='hidden', name='user_name', value='setByHTML')             
+      input#refresh_token(type='hidden', name='refresh_token', value='#{pageData.access_token}')           
+      button.btn.waves-effect.waves-light(onclick='createPlaylist()') Submit
+        i.material-icons.right send       
       .not_displayed#notloggedin
-        h1 There was an error logging you in!     
+        h1 There was an error logging you in!
+    .container.not_displayed#code1
+      h1.center-align#message      
+    .container.not_displayed#code2
+      a.btn.waves-effect.waves-light(href='/') Return Home    
     script(src='http://code.jquery.com/jquery-1.10.1.min.js')
     script(src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/js/materialize.min.js")   
     script.
@@ -40,4 +44,19 @@ html
                 document.getElementById("user_name").value=response.display_name;
               }
           });
+      }
+      function createPlaylist(){
+        var playlist_name=document.getElementById('playlistName').value
+        var user_id = document.getElementById("user_id").value;
+        var user_name = document.getElementById("user_name").value;
+
+        $.post("/createPlaylist",
+        {playlistName:playlist_name,access_token:'#{pageData.access_token}',refresh_token:'#{pageData.refresh_token}', user_id:user_id, user_name: user_name}, 
+        function(data, status){
+          
+          document.getElementById("message").innerHTML="The pin for " + data.pageData.playlist_name +' is ' +data.pageData.pin;
+          $('#code1').show();
+          $('#code2').show();
+        });
+
       }

@@ -42,7 +42,10 @@ padding: 36px;
 }
 h1{
   color: #e57373 ;
-  padding:32px;
+  padding:12px;
    border-radius: 25px;
+}
+.invisible{
+	display:none;
 }
 
