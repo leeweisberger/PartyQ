@@ -8,8 +8,7 @@ html
     link(href="//fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet")
   body
     .container.center-align
-      h1 Collaborating on playlist #{pageData.playlist_name} By #{pageData.user_name}
-       
+      h3 Collaborating on playlist #{pageData.playlist_name} By #{pageData.user_name}
     .container
       .row
         .input-field
@@ -22,7 +21,7 @@ html
           input.form-control(type='text', name='artist' id='artist')
           label(for='artist') Artist Name
       button.btn.waves-effect.waves-light(type='button', onclick="search()") Search
-      button.btn.right(type='button', href='/') Return Home
+      a.btn.right.waves-effect.waves-red(type='button', href='/') Return Home
     .container(id='list',onclick="Materialize.showStaggeredList('#staggered-test')")
     script(src='//code.jquery.com/jquery-1.10.1.min.js')
     script(src="//cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/js/materialize.min.js")
@@ -81,6 +80,7 @@ html
          $.post("/addSongToPlaylist",
         {songID:songID,pin:'#{pageData.pin}',refresh_token:'#{pageData.refresh_token}'}, 
         function(data, status){
+        alert(status);
         if(data=='OK'){
           Materialize.toast("Song Added Successfully", 3000, 'rounded green' );
         }

@@ -2,16 +2,17 @@ doctype html
 html
   head
     title Example of the Authorization Code flow with Spotify    
-    link(rel='stylesheet', href='//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css')     
-    link(href='/css/styles.css', rel='stylesheet')    
     link(rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/css/materialize.min.css")
-    link(href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet")
+    link(href="//fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet")
+    link(href='/css/styles.css', rel='stylesheet')    
+
   body
-    .container
-      //- form.create_playlist#createPlaylistForm(name='createPlaylistForm', action='createPlaylist', method='post')
-      .row#loggedin
-        .input-field.col.s12
-          input.validate#playlistName(type='text', name='playlistName')             
+    
+    .container#loggedin
+      h3 Create Playlist
+      .row.create_playlist
+        .input-field.col.l12.s12
+          input.validate#playlistName(type='text',pattern="\S+",required, name='playlistName')             
           label(for='playlistName') Playlist Name             
       input#access_token(type='hidden', name='access_token', value='#{pageData.access_token}')             
       input#user_id(type='hidden', name='user_id', value='setByHTML')             
@@ -19,14 +20,25 @@ html
       input#refresh_token(type='hidden', name='refresh_token', value='#{pageData.access_token}')           
       button.btn.waves-effect.waves-light(onclick='createPlaylist()') Submit
         i.material-icons.right send       
-      .not_displayed#notloggedin
-        h1 There was an error logging you in!
-    .container.not_displayed#code1
-      h1.center-align#message      
-    .container.not_displayed#code2
-      a.btn.waves-effect.waves-light(href='/') Return Home    
+    .container.not_displayed#notloggedin
+      h3 There was an error logging you in!
+    .container.not_displayed.center-align#code1
+      .divider.top_margin
+      h3#message 
+      a.btn.waves-effect.waves-light.center(href='/') Return Home
+    .divider.top_margin
+    .container#playlists
+      h3 Your Playlists
+      table.hover.responsive-table.bordered
+        thead
+          tr
+            th(data-field='Name') Name
+            th(data-field='Pin') Pin
+        tbody#table_body
+
+
     script(src='//code.jquery.com/jquery-1.10.1.min.js')
-    script(src="//cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/js/materialize.min.js")   
+    script(src="//cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/js/materialize.min.js") 
     script.
       if ('#{pageData.error}' && '#{pageData.error}'!='null') {
         alert('There was an error during the authentication');
@@ -44,21 +56,56 @@ html
               success: function(response) {
                 document.getElementById("user_id").value=response.id;
                 document.getElementById("user_name").value=response.display_name;
+                getPlaylists();
               }
           });
       }
-      function createPlaylist(){
-        var playlist_name=document.getElementById('playlistName').value
-        var user_id = document.getElementById("user_id").value;
-        var user_name = document.getElementById("user_name").value;
 
-        $.post("/createPlaylist",
-        {playlistName:playlist_name,access_token:'#{pageData.access_token}',refresh_token:'#{pageData.refresh_token}', user_id:user_id, user_name: user_name}, 
+      function getPlaylists(){
+        var table_body = document.getElementById("table_body");
+        while (table_body.firstChild) {
+          table_body.removeChild(table_body.firstChild);
+        }
+
+        var user_id = document.getElementById("user_id").value;
+        $.post("/getPlaylists",
+        {user_id:user_id}, 
         function(data, status){
+          for(i=0; i<data.pageData.length; i++){
+            var entry = data.pageData[i];
+            var row = document.createElement("tr");
+            var name = document.createElement("td");
+            name.appendChild(document.createTextNode(entry.playlist_name));
+            var pin = document.createElement("td");
+            pin.appendChild(document.createTextNode(entry.pin));
+            row.appendChild(name);
+            row.appendChild(pin);
+            var table_body = document.getElementById("table_body");
+            table_body.appendChild(row);
+          }
           
-          document.getElementById("message").innerHTML="The pin for " + data.pageData.playlist_name +' is ' +data.pageData.pin;
-          $('#code1').show();
-          $('#code2').show();
+          $('#playlists').show();
         });
+      }
+      function createPlaylist(){
+        if ($("#playlistName").val().trim() == "") {
+          Materialize.toast("Playlist name cannot be empty", 3000, 'rounded red' );
+
+        }
+        else{
+          var playlist_name=document.getElementById('playlistName').value
+          var user_id = document.getElementById("user_id").value;
+          var user_name = document.getElementById("user_name").value;
+
+          $.post("/createPlaylist",
+          {playlistName:playlist_name,access_token:'#{pageData.access_token}',refresh_token:'#{pageData.refresh_token}', user_id:user_id, user_name: user_name}, 
+          function(data, status){
+            
+            document.getElementById("message").innerHTML="The pin for " + data.pageData.playlist_name +' is ' +data.pageData.pin;
+            $('#code1').show();
+            $('#code2').show();
+            getPlaylists();
+          });
+        }
 
       }

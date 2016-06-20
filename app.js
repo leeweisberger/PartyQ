@@ -6,7 +6,9 @@ var bodyParser = require('body-parser');
 
 var client_id = '4ee1d53243074fdc8e16cf4f989e356c'; // Your client id
 var client_secret = '0f0043cf1a6645788e7167f9ca142fde'; // Your secret
-var redirect_uri = 'https://lit-cove-69879.herokuapp.com/callback'; // Your redirect uri
+// var redirect_uri = 'https://lit-cove-69879.herokuapp.com/callback'; // Your redirect uri
+var redirect_uri = 'http://localhost/callback'; // Your redirect uri
+
 
 var access_token=null;
 var refresh_token=null;
@@ -105,9 +107,7 @@ app.get('/createPlaylist', function(req,res){
   res.render('createPlaylist', {pageData: {access_token : req.query.access_token, refresh_token: req.query.refresh_token, error: req.query.error}});   
 
 }); 
-app.get('/confirmPlaylist', function(req,res){
-    res.render('confirmPlaylist', {pageData: {pin: req.query.pin, playlist_name:req.query.playlist_name}});   
-}); 
+
 app.get('/playlist', function(req,res){
      res.render('playlist', {pageData: {user_name: req.query.user_name, playlist_name: req.query.playlist_name,pin:req.query.pin, refresh_token:req.query.refresh_token}});   
 }); 
@@ -187,6 +187,9 @@ app.post('/addSongToPlaylist', function(req, res){
 	var db = firebase.database();
 	var playlists = db.ref("playlists");
 	playlists.once("value", function(snapshot) {
+		if(!snapshot.val()[pin]){
+
+		}
   		var playlist_id = snapshot.val()[pin].playlist_id;
   		var user_id = snapshot.val()[pin].user_id;
   		var token = snapshot.val()[pin].access_token;
@@ -215,11 +218,28 @@ app.post('/addSongToPlaylist', function(req, res){
 
 });
 
-app.post('/createPlaylist', function(req, res) {
-	var post_data = querystring.stringify({
-      name: req.body.playlistName,
-  	});
+app.post('/getPlaylists', function(req,res){
+	var user_id = req.body.user_id;
+	var db = firebase.database();
+	var playlists = db.ref("playlists");
+	playlists.startAt(user_id).endAt(user_id).once("value", function(snapshot) {
+  		// console.log(snapshot.val());
+  		var results=[];
+  		for (var key in snapshot.val()) {
+  			console.log('key:' + key)
+		    var obj = snapshot.val()[key];
+		    obj.pin=key;
+		    results.push(obj);
+		}
 
+  		res.send({pageData:results})
+
+	}, function (errorObject) {
+	  		console.log("The read failed: " + errorObject.code);
+	});
+});
+
+app.post('/createPlaylist', function(req, res) {
 	var options = {
 		url: 'https://api.spotify.com/v1/users/' + req.body.user_id +'/playlists',
 		headers: { 'Authorization': 'Bearer ' + req.body.access_token },
@@ -243,12 +263,14 @@ app.post('/createPlaylist', function(req, res) {
 					    user_id: req.body.user_id,
 					    user_name: req.body.user_name,
 					    access_token: req.body.access_token,
-					    refresh_token: refresh_token};
+					    refresh_token: req.body.refresh_token};
 				console.log('body ' +pin);
 				playlist[pin] = db_body;
 				playlists.update(
 				  	playlist
 				);
+				var playListRef = playlists.child(pin);
+				playListRef.setPriority(req.body.user_id);
 				console.log(req.body.playlistName);
 			    res.send({pageData:{pin:pin,playlist_name:req.body.playlistName}});
 
@@ -261,7 +283,7 @@ app.post('/createPlaylist', function(req, res) {
 
 var generateUniqueCombination = function(){
     var result = '';
-    var chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    var chars = '0123456789abcdefghijklmnopqrstuvwxyz';
     for (var i = 4; i > 0; --i) result += chars[Math.floor(Math.random() * chars.length)];
     return result;
 }

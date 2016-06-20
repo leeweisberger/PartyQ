@@ -1,26 +1,25 @@
 doctype html
 html
   head
-    title Exampl of the Authorization Code flow with Spotify     
-    link(rel='stylesheet', href='//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css')  
-    link(href='/css/styles.css', rel='stylesheet')  
+    title PartyQ     
     link(rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/css/materialize.min.css")
     link(href="//fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet")
+    link(href='/css/styles.css', rel='stylesheet')  
 
- 
   body
     .container.center-align
-      h1 Create a Party Playlist    
-      a.waves-effect.waves-light.btn(href='/login') Create a New Playlist!!!     
-    hr
+      h1.Roboto-italic-600 CREATE   
+      a.waves-effect.waves-light.btn(href='/login') Manage Your Playlists 
+    .container
+      h2 OR
     .container.center-align
-      h1 Add Songs to a Party Playlist         
+      h1 COLLABORATE         
       form#findPlaylistForm(name='findPlaylistForm', action='findPlaylist', method='post')
         .row
-          .input-field.col.s2.offset-s5
-            input.validate(id='pin',pattern='.{4}', required,oninvalid="setCustomValidity('Submit a 4 Character Pin')",data-error="Incorrect Pin", data-success="Correct Pin",type='text', name='pin') 
+          .input-field.col.l2.s4.offset-s4.offset-l5
+            input.validate.center-align(id='pin',pattern='.{4}', required,oninvalid="setCustomValidity('Submit a 4 Character Pin')",data-error="Incorrect Pin", data-success="Correct Pin",type='text', name='pin') 
             label.left-align(for="pin") Pin          
-        button.btn.waves-effect.waves-light(type='submit') Submit
+        button.btn.waves-effect.waves-light(type='submit') Collaborate
           i.material-icons.right send   
     script(src='//code.jquery.com/jquery-1.10.1.min.js')
     //- script( src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js") 
