@@ -8,6 +8,7 @@ html
     meta(name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0")
 
 
+
   body
     .container.center-align
       h1.Roboto-italic-600 CREATE   
@@ -19,7 +20,7 @@ html
       form#findPlaylistForm(name='findPlaylistForm', action='findPlaylist', method='post')
         .row
           .input-field.col.l2.s4.offset-s4.offset-l5
-            input.validate.center-align(id='pin',pattern='.{4}', required,oninvalid="setCustomValidity('Submit a 4 Character Pin')",data-error="Incorrect Pin", data-success="Correct Pin",type='text', name='pin') 
+            input.validate(id='pin',pattern='.{4}', required,oninvalid="setCustomValidity('Submit a 4 Character Pin')",data-error="Incorrect Pin", data-success="Correct Pin",type='text', name='pin') 
             label.left-align(for="pin") Pin          
         button.btn.waves-effect.waves-light(type='submit') Collaborate
           i.material-icons.right send   
