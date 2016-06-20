@@ -29,12 +29,6 @@ html
     script(src="//cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/js/materialize.min.js")
 
     script.
-      var viewportMeta = document.createElement('meta');
-      viewportMeta.setAttribute('id', 'myMeta');
-      viewportMeta.setAttribute('name', 'viewport');
-      viewportMeta.setAttribute('content', 'width=device-width, initial-scale=1.0, user-scalable=no');
-      window.parent.document.getElementsByTagName('head')[0].appendChild(viewportMeta);
-
       if('#{pageData.error}'){
         Materialize.toast("Pin Not Found", 3000, 'rounded red' );
       }
