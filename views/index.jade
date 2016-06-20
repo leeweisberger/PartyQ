@@ -5,7 +5,7 @@ html
     link(rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/css/materialize.min.css")
     link(href="//fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet")
     link(href='/css/styles.css', rel='stylesheet')  
-    meta(name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0")
+    //- meta(name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0")
 
 
 
@@ -29,7 +29,11 @@ html
     script(src="//cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/js/materialize.min.js")
 
     script.
-      
+      var viewportMeta = document.createElement('meta');
+      viewportMeta.setAttribute('id', 'myMeta');
+      viewportMeta.setAttribute('name', 'viewport');
+      viewportMeta.setAttribute('content', 'width=device-width, initial-scale=1.0, user-scalable=no');
+      document.head.appendChild(viewportMeta);
       if('#{pageData.error}'){
         Materialize.toast("Pin Not Found", 3000, 'rounded red' );
       }
