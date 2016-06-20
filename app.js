@@ -95,7 +95,8 @@ app.get('/callback', function(req, res) {
     	console.log(body);
         access_token = body.access_token;
         refresh_token = body.refresh_token;
-        res.render('createPlaylist', {pageData: {access_token : access_token, refresh_token: refresh_token, error: error}});   
+        // res.render('createPlaylist', {pageData: {access_token : access_token, refresh_token: refresh_token, error: error}});   
+    	res.redirect('/');
     });
   }
 });
