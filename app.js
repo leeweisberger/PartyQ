@@ -96,14 +96,15 @@ app.get('/callback', function(req, res) {
         access_token = body.access_token;
         refresh_token = body.refresh_token;
         // res.render('createPlaylist', {pageData: {access_token : access_token, refresh_token: refresh_token, error: error}});   
-    	res.redirect('/');
+    	res.redirect('createPlaylist?access_token='+access_token+'&refresh_token='+refresh_token+'&error='+error);
     });
   }
 });
 
-// app.get('/createPlaylist', function(req,res){
-//  res.sendfile(__dirname + '/public/createPlaylist.html');
-// }); 
+app.get('/createPlaylist', function(req,res){
+  res.render('createPlaylist', {pageData: {access_token : req.query.access_token, refresh_token: req.query.refresh_token, error: req.query.error}});   
+
+}); 
 app.get('/confirmPlaylist', function(req,res){
     res.render('confirmPlaylist', {pageData: {pin: req.query.pin, playlist_name:req.query.playlist_name}});   
 }); 
