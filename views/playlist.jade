@@ -35,12 +35,9 @@ html
           $(this).closest("." + $(this).attr("data-hide")).hide();
         });
       });
-      function createCard(song,songID, artist, album, art,row, first){
+      function createCard(song,songID, artist, album, art,row){
         var col = document.createElement("div");
         col.className='col l6 s12';
-        if(!first){
-          col.className='col l6 s12 offset-l6'
-        }
         var card = document.createElement("div");
         card.className='card';
         var card_image = document.createElement("div");
@@ -119,7 +116,7 @@ html
                     var row = document.createElement('div');
                     row.className='row';
                   }
-                  row.appendChild(createCard(track, id,artist, album, art,i%2==0));
+                  row.appendChild(createCard(track, id,artist, album, art));
                   
                   if(i%2!=0)
                     div.appendChild(row);
