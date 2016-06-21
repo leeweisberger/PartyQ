@@ -118,11 +118,8 @@ html
 
           $.post("/createPlaylist",
           {playlistName:playlist_name,access_token:'#{pageData.access_token}',refresh_token:'#{pageData.refresh_token}', user_id:user_id, user_name: user_name}, 
-          function(data, status){
-            
-            document.getElementById("message").innerHTML="The pin for " + data.pageData.playlist_name +' is ' +data.pageData.pin;
+          function(data, status){            
             Materialize.toast("The pin for " + data.pageData.playlist_name +' is ' +data.pageData.pin, 5000, 'rounded green' );
-
             getPlaylists();
           });
         }
