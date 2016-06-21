@@ -34,7 +34,7 @@ html
           $(this).closest("." + $(this).attr("data-hide")).hide();
         });
       });
-      function createCard(song,songID, artist, album, art,row){
+      function createCard(song,songID, artist, album, art){
         var col = document.createElement("div");
         col.className='col l6 s12';
         var card = document.createElement("div");
@@ -73,8 +73,6 @@ html
         return col;
 
       }
-
-
       
 
       function addSong(songID){
