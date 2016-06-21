@@ -36,8 +36,16 @@ html
             th(data-field='Name') Name
             th(data-field='Pin') Pin
         tbody#table_body
-
-
+    .modal.bottom-sheet#modal
+      .modal-content
+        h4#modal-title
+        table.hover.responsive-table.bordered
+          thead
+            tr
+              th(data-field='Track') Track
+              th(data-field='Artist') Artist
+              th(data-field='Album') Album
+          tbody#modal-body  
     script(src='//code.jquery.com/jquery-1.10.1.min.js')
     script(src="//cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/js/materialize.min.js") 
     script.
@@ -71,6 +79,33 @@ html
         });
       }
 
+      function viewSongs(pin,playlist_name){
+        $.post("/addSongToPlaylist/getSongs",
+        {pin:pin,refresh_token:'#{pageData.refresh_token}'}, 
+        function(data, status){
+          var modal_body = document.getElementById("modal-body");
+          while (modal_body.firstChild) {
+            modal_body.removeChild(modal_body.firstChild);
+          }
+          document.getElementById("modal-title").innerHTML=playlist_name;
+          for(i=0; i<data.length; i++){
+            var entry = data[i];
+            var row = document.createElement("tr");
+            var track = document.createElement("td");
+            track.appendChild(document.createTextNode(entry.name));
+            var artist = document.createElement("td");
+            artist.appendChild(document.createTextNode(entry.artist));
+            var album = document.createElement("td");
+            album.appendChild(document.createTextNode(entry.album));
+            row.appendChild(track);
+            row.appendChild(artist);
+            row.appendChild(album);
+            modal_body.appendChild(row);
+          }
+          $('#modal').openModal();
+        });
+      }
+
       function getPlaylists(){
         var table_body = document.getElementById("table_body");
         while (table_body.firstChild) {
@@ -88,7 +123,7 @@ html
             name.appendChild(document.createTextNode(entry.playlist_name));
             var pin = document.createElement("td");
             pin.appendChild(document.createTextNode(entry.pin));
-            var button = document.createElement("button");
+            var button = document.createElement("a");
             button.className=('btn waves-effect waves-yellow');
             button.appendChild(document.createTextNode('Add Songs'));
             //- var f = findPlaylist(entry.pin);
@@ -97,9 +132,19 @@ html
                 findPlaylist(args);
               }
             })(entry.pin);
+            var view_songs = document.createElement("a");
+            view_songs.className=('btn waves-effect waves-yellow left_margin');
+            view_songs.appendChild(document.createTextNode('View Songs'));
+            //- var f = findPlaylist(entry.pin);
+            view_songs.onclick = (function(arg1,arg2){
+              return function(){
+                viewSongs(arg1,arg2);
+              }
+            })(entry.pin,entry.playlist_name);
             row.appendChild(name);
             row.appendChild(pin);
             row.appendChild(button);
+            row.appendChild(view_songs);
             var table_body = document.getElementById("table_body");
             table_body.appendChild(row);
           }

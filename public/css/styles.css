@@ -17,6 +17,10 @@ padding: 36px;
   font-size: 18px;
   font-weight: bold;
 }
+
+.left_margin{
+	margin-left: 12px;
+}
 h1{
   color: #e57373 ;
   padding:12px;

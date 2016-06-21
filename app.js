@@ -138,26 +138,26 @@ app.post('/findPlaylist', function(req, res){
 		});
 });
 //c
-app.post('/findSongs', function(req, res){
-	var querystring = 'track:' + req.body.track.replace(/\s/g, '+');
-  	if(req.body.artist)
-  		querystring+='+artist:' + req.body.artist.replace(/\s/g, '+');
-  	querystring+='&type=track';
+// app.post('/findSongs', function(req, res){
+// 	var querystring = 'track:' + req.body.track.replace(/\s/g, '+');
+//   	if(req.body.artist)
+//   		querystring+='+artist:' + req.body.artist.replace(/\s/g, '+');
+//   	querystring+='&type=track';
 
-	var options = {
-		url: 'https://api.spotify.com/v1/search/?q=' + querystring
-	};
-	request.post(options, function(error, response, body) {
-		if(error){
-          	console.log("error finding tracks");
-         }
-         else{
-         	console.log(response);
-         	console.log("boasdfasdfasdfasdfasfasdf");
-         	console.log(body);
-         }
-	});
-});
+// 	var options = {
+// 		url: 'https://api.spotify.com/v1/search/?q=' + querystring
+// 	};
+// 	request.post(options, function(error, response, body) {
+// 		if(error){
+//           	console.log("error finding tracks");
+//          }
+//          else{
+//          	console.log(response);
+//          	console.log("boasdfasdfasdfasdfasfasdf");
+//          	console.log(body);
+//          }
+// 	});
+// });
 app.use('/addSongToPlaylist', function(req, res, next) {
   var refresh_token = req.body.refresh_token;
   console.log(refresh_token);
@@ -184,6 +184,38 @@ app.use('/addSongToPlaylist', function(req, res, next) {
 		next();
     }
   });
+});
+
+app.post('/addSongToPlaylist/getSongs', function(req,res){
+	console.log('getting songs of playlist');
+	var pin = req.body.pin;
+	var db = firebase.database();
+	var playlists = db.ref("playlists");
+	playlists.once("value", function(snapshot) {
+		var playlist_id = snapshot.val()[pin].playlist_id;
+  		var user_id = snapshot.val()[pin].user_id;
+  		var token = snapshot.val()[pin].access_token;
+  		var options = {
+			url: 'https://api.spotify.com/v1/users/' + user_id +'/playlists/'+playlist_id+'/tracks'+'?fields=items(track(name,artists,album(name)))',
+			headers: { 'Authorization': 'Bearer ' + token },
+			json: true
+		};
+		request.get(options, function(error, response, body) {
+			console.log('error: ' +error);
+			var result=[];
+			var items=body.items
+			for(i=0; i<items.length; i++){
+				var listing = items[i];
+				console.log('listing: ' + listing);
+				var album = listing.track.album.name;
+				var artist = listing.track.artists[0].name;
+				var name=listing.track.name;
+				result.push({name:name, artist:artist, album:album});
+			}
+			res.send(result);
+		});
+	});
+
 });
 
 app.post('/addSongToPlaylist', function(req, res){
