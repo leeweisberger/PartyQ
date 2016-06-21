@@ -9,7 +9,9 @@ html
   
 
   body
-    
+    nav
+      .nav-wrapper
+        a.brand-logo(href='/') PartyQ
     .container#loggedin
       h3 Create Playlist
       .row.create_playlist
@@ -22,7 +24,6 @@ html
       input#refresh_token(type='hidden', name='refresh_token', value='#{pageData.access_token}')           
       button.btn.waves-effect.waves-light(onclick='createPlaylist()') Submit
         i.material-icons.right send
-      a.btn.waves-effect.waves-red.right(href='/') Return Home
        
     .container.not_displayed#notloggedin
       h3 There was an error logging you in!
