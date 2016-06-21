@@ -14,20 +14,18 @@ html
       h3 Create Playlist
       .row.create_playlist
         .input-field.col.l12.s12
-          input.validate#playlistName(type='text',pattern="\S+",required, name='playlistName')             
+          input.validate#playlistName(type='text',required, name='playlistName')             
           label(for='playlistName') Playlist Name             
       input#access_token(type='hidden', name='access_token', value='#{pageData.access_token}')             
       input#user_id(type='hidden', name='user_id', value='setByHTML')             
       input#user_name(type='hidden', name='user_name', value='setByHTML')             
       input#refresh_token(type='hidden', name='refresh_token', value='#{pageData.access_token}')           
       button.btn.waves-effect.waves-light(onclick='createPlaylist()') Submit
-        i.material-icons.right send       
+        i.material-icons.right send
+      a.btn.waves-effect.waves-red.right(href='/') Return Home
+       
     .container.not_displayed#notloggedin
       h3 There was an error logging you in!
-    .container.not_displayed.center-align#code1
-      .divider.top_margin
-      h3#message 
-      a.btn.waves-effect.waves-light.center(href='/') Return Home
     .divider.top_margin
     .container#playlists
       h3 Your Playlists
@@ -64,6 +62,14 @@ html
           });
       }
 
+      function findPlaylist(pin){
+        $.post("/findPlaylist",
+        {pin:pin,ajax:'true'}, 
+        function(data, status){
+          window.location = data.redirect;
+        });
+      }
+
       function getPlaylists(){
         var table_body = document.getElementById("table_body");
         while (table_body.firstChild) {
@@ -81,8 +87,18 @@ html
             name.appendChild(document.createTextNode(entry.playlist_name));
             var pin = document.createElement("td");
             pin.appendChild(document.createTextNode(entry.pin));
+            var button = document.createElement("button");
+            button.className=('btn waves-effect waves-yellow');
+            button.appendChild(document.createTextNode('Add Songs'));
+            //- var f = findPlaylist(entry.pin);
+            button.onclick = (function(args){
+              return function(){
+                findPlaylist(args);
+              }
+            })(entry.pin);
             row.appendChild(name);
             row.appendChild(pin);
+            row.appendChild(button);
             var table_body = document.getElementById("table_body");
             table_body.appendChild(row);
           }
@@ -105,8 +121,8 @@ html
           function(data, status){
             
             document.getElementById("message").innerHTML="The pin for " + data.pageData.playlist_name +' is ' +data.pageData.pin;
-            $('#code1').show();
-            $('#code2').show();
+            Materialize.toast("The pin for " + data.pageData.playlist_name +' is ' +data.pageData.pin, 5000, 'rounded green' );
+
             getPlaylists();
           });
         }

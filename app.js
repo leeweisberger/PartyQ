@@ -121,7 +121,12 @@ app.post('/findPlaylist', function(req, res){
   			var playlistName= snapshot.val()[req.body.pin].playlist_name;
   			var userName= snapshot.val()[req.body.pin].user_name;
   			var refresh_token = snapshot.val()[req.body.pin].refresh_token;
-  			res.redirect('playlist?playlist_name='+playlistName+'&user_name='+userName+'&pin='+req.body.pin+'&refresh_token='+refresh_token);
+  			console.log(playlistName);
+  			if(req.body.ajax)
+  				res.send({redirect:'playlist?playlist_name='+playlistName+'&user_name='+userName+'&pin='+req.body.pin+'&refresh_token='+refresh_token});
+  			else
+  				res.redirect('playlist?playlist_name='+playlistName+'&user_name='+userName+'&pin='+req.body.pin+'&refresh_token='+refresh_token);
+
   		}
 
   		else{

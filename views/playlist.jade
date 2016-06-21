@@ -24,7 +24,6 @@ html
           label(for='artist') Artist Name
       button.btn.waves-effect.waves-light(type='button', onclick="search()") Search
       a.btn.right.waves-effect.waves-red(type='button', href='/') Return Home
-    .container(id='list',onclick="Materialize.showStaggeredList('#staggered-test')")
     script(src='//code.jquery.com/jquery-1.10.1.min.js')
     script(src="//cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/js/materialize.min.js")
 
@@ -74,6 +73,8 @@ html
         return col;
 
       }
+
+
       
 
       function addSong(songID){
